@@ -34,18 +34,29 @@ async function run() {
         const productCollection = client.db("productsDB").collection("products")
         const myCartCollection = client.db("myCartDB").collection("mycart")
 
-
+        //products find all
         app.get('/products', async (req, res) => {
             const cursor = productCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
+        //products find one
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await productCollection.findOne(query);
             res.send(result);
         })
+        //product insert one
+        app.post('/products', async (req, res) => {
+            const newProduct = req.body;
+            console.log(newProduct);
+            const result = await productCollection.insertOne(newProduct);
+            res.send(result)
+
+        })
+
+        //product update one
         app.put('/products/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
@@ -66,23 +77,34 @@ async function run() {
             res.send(result);
 
         })
+        // my card find all
         app.get('/mycart', async (req, res) => {
             const cursor = myCartCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
+        // my card find one
+        app.get('/mycart/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await myCartCollection.findOne(query);
+            res.send(result);
+        })
+
+        // my card insert one
         app.post('/mycart', async (req, res) => {
             const newCart = req.body;
             console.log(newCart);
             const result = await myCartCollection.insertOne(newCart);
             res.send(result)
         })
-        app.post('/products', async (req, res) => {
-            const newProduct = req.body;
-            console.log(newProduct);
-            const result = await productCollection.insertOne(newProduct);
-            res.send(result)
 
+        //my cart delete one
+        app.delete('/mycart/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: id };
+            const result = await myCartCollection.deleteOne(query);
+            res.send(result)
         })
 
 
